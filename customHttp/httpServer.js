@@ -17,7 +17,8 @@ class HttpServer extends net.Server {
     this.RequestStream = new HttpRequest()
 
     function incomingMessageListener (chunk) {
-      if (headersBoundaryEncounter(chunk)) {
+      server.RequestStream.headersWritten = false
+      if (headersBoundaryEncounter(chunk) && !server.RequestStream.headersWritten) {
         const headersPart = chunk.slice(0, chunk.indexOf('\r\n\r\n'))
         const bodyPart = chunk.slice(chunk.indexOf('\r\n\r\n') + 4, chunk.length)
         server.RequestStream.concatHeaders(headersPart)
